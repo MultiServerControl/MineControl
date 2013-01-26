@@ -39,7 +39,9 @@ public class MainController {
 	} else if (command.equals("restart")) {
 	    controller.restart();
 	} else if (command.equals("status")) {
-	    controller.isRunning();
+	    controller.isRunning(screenName);
+	} else if (command.equals("pid")) {
+	    controller.getPid(screenName);
 	}
     }
 
@@ -69,8 +71,12 @@ public class MainController {
 	System.out.println("restart");
     }
 
-    public void isRunning() {
+    public void isRunning(String screenName) {
 	System.out.println("status");
+	if (this.getPid(screenName) != 0) {
+	    System.out.println("running");
+	} else
+	    System.out.println("stopped");
     }
 
     protected ArrayList<String> parseCommand(String command) {
@@ -92,7 +98,12 @@ public class MainController {
 	    Process p = builder.start();
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(
 		    p.getInputStream()));
-	    pid = Integer.parseInt(reader.readLine());
+	    String line = "";
+	    while ((line = reader.readLine()) != null) {
+		pid = Integer.parseInt(line);
+		line = "";
+	    }
+
 	    System.out.println(pid);
 
 	} catch (Exception e) {
