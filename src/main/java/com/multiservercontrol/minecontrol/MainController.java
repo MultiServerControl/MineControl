@@ -3,7 +3,6 @@ package com.multiservercontrol.minecontrol;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -77,15 +76,6 @@ public class MainController {
 	    System.out.println("running");
 	} else
 	    System.out.println("stopped");
-    }
-
-    protected ArrayList<String> parseCommand(String command) {
-	ArrayList<String> arguments = new ArrayList<String>();
-	String[] parts = command.split(" ");
-	for (String part : parts) {
-	    arguments.add(part);
-	}
-	return arguments;
     }
 
     protected int getPid(String screenName) {
