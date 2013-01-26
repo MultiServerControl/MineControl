@@ -1,6 +1,7 @@
 package com.multiservercontrol.minecontrol;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -41,16 +42,17 @@ public class MainController {
     public void start(String serverId) {
 	System.out.println("Starting server...");
 
-	String startCommand = config.getString("command.start");
-	this.builder.command("screen", "-dmS", serverId, "java", "-jar",
-		"minecraft_server.jar", "nogui");
-	builder.redirectErrorStream(true);
+	this.config.setProperty("server.name", serverId);
+	String startCommand = this.config.getString("command.start");
+	this.builder.command(this.parseCommand(startCommand));
+	this.builder.redirectErrorStream(true);
 
 	try {
 	    Process p = builder.start();
+	    System.out.println("Server startup successful!");
 	} catch (IOException e) {
-	    // TODO Auto-generated catch block
-	    e.printStackTrace();
+	    // TODO
+	    System.out.println("Server startup failed!");
 	}
     }
 
@@ -64,5 +66,14 @@ public class MainController {
 
     public void isRunning() {
 	System.out.println("status");
+    }
+
+    protected ArrayList<String> parseCommand(String command) {
+	ArrayList<String> arguments = new ArrayList<String>();
+	String[] parts = command.split(" ");
+	for (String part : parts) {
+	    arguments.add(part);
+	}
+	return arguments;
     }
 }
