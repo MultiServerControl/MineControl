@@ -1,6 +1,8 @@
 package com.multiservercontrol.minecontrol;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import org.apache.commons.configuration.Configuration;
@@ -11,10 +13,12 @@ public class MainController {
 
     private ProcessBuilder builder = new ProcessBuilder("");
     private Configuration config = null;
+    private String pathToShellBinary = null;
 
     public MainController() {
 	try {
 	    this.config = new PropertiesConfiguration("minecontrol.properties");
+	    this.pathToShellBinary = this.config.getString("shell.bin");
 	} catch (ConfigurationException e) {
 	    // TODO log
 	}
@@ -25,11 +29,11 @@ public class MainController {
      */
     public static void main(String[] args) {
 	MainController controller = new MainController();
-	String server = args[0];
+	String screenName = args[0];
 	String command = args[1];
 
 	if (command.equals("start")) {
-	    controller.start(server);
+	    controller.start(screenName);
 	} else if (command.equals("stop")) {
 	    controller.stop();
 	} else if (command.equals("restart")) {
@@ -39,12 +43,13 @@ public class MainController {
 	}
     }
 
-    public void start(String serverId) {
+    public void start(String screenName) {
 	System.out.println("Starting server...");
 
-	this.config.setProperty("server.name", serverId);
+	this.config.setProperty("screen.name", screenName);
 	String startCommand = this.config.getString("command.start");
-	this.builder.command(this.parseCommand(startCommand));
+
+	this.builder.command(this.pathToShellBinary, "-c", startCommand);
 	this.builder.redirectErrorStream(true);
 
 	try {
@@ -75,5 +80,25 @@ public class MainController {
 	    arguments.add(part);
 	}
 	return arguments;
+    }
+
+    protected int getPid(String screenName) {
+	int pid = 0;
+	this.config.setProperty("screen.name", screenName);
+	String pidCommand = this.config.getString("command.pid");
+	this.builder.command(this.pathToShellBinary, "-c", pidCommand);
+
+	try {
+	    Process p = builder.start();
+	    BufferedReader reader = new BufferedReader(new InputStreamReader(
+		    p.getInputStream()));
+	    pid = Integer.parseInt(reader.readLine());
+	    System.out.println(pid);
+
+	} catch (Exception e) {
+	    // TODO
+	    System.out.println("Pid lookup failed: " + e.getMessage());
+	}
+	return pid;
     }
 }
