@@ -30,6 +30,7 @@ public class MainController {
 	MainController controller = new MainController();
 	String screenName = args[0];
 	String command = args[1];
+	String serverCommand = args[2];
 
 	if (command.equals("start")) {
 	    controller.start(screenName);
@@ -41,6 +42,8 @@ public class MainController {
 	    controller.isRunning(screenName);
 	} else if (command.equals("pid")) {
 	    controller.getPid(screenName);
+	} else if (command.equals("command")) {
+	    controller.sendServerCommand(screenName, serverCommand);
 	}
     }
 
@@ -101,5 +104,20 @@ public class MainController {
 	    System.out.println("Pid lookup failed: " + e.getMessage());
 	}
 	return pid;
+    }
+
+    protected void sendServerCommand(String screenName, String serverCommand) {
+	this.config.setProperty("screen.name", screenName);
+	this.config.setProperty("transmitter.argument", serverCommand);
+
+	String transmitterCommand = this.config
+		.getString("command.transmitter");
+	this.builder.command(this.pathToShellBinary, "-c", transmitterCommand);
+
+	try {
+	    Process p = builder.start();
+	} catch (Exception e) {
+	    System.out.println(e.getMessage());
+	}
     }
 }
