@@ -58,7 +58,7 @@ public class MainController {
     public void start(String screenName) {
 	if (!this.isRunning(screenName)) {
 	    // System.out.println("Starting server...");
-	    logger.info("Starting server" + screenName + "...");
+	    logger.info("Starting server " + screenName + "...");
 
 	    this.config.setProperty("screen.name", screenName);
 	    String startCommand = this.config.getString("command.start");
@@ -86,7 +86,20 @@ public class MainController {
 	if (this.isRunning(screenName)) {
 	    // System.out.println("stop");
 	    logger.info("Stopping server " + screenName + "...");
+	    long shutdownDelay = this.config.getLong("stop.delay");
 	    this.sendServerCommand(screenName, "stop");
+
+	    try {
+		Thread.sleep(shutdownDelay);
+	    } catch (InterruptedException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	    }
+	    if (!this.isRunning(screenName)) {
+		logger.info("Server " + screenName + " stopped successfully!");
+	    } else {
+		logger.warn("Can't stop server " + screenName);
+	    }
 	} else {
 	    // System.out.println("no server running");
 	    logger.warn("Server " + screenName + "isn't running!");
