@@ -7,26 +7,33 @@ import java.io.InputStreamReader;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 public class MainController {
 
     private ProcessBuilder builder = new ProcessBuilder("");
+    private static Logger logger = Logger.getLogger(MainController.class);
     private Configuration config = null;
     private String pathToShellBinary = null;
 
     public MainController() {
 	try {
 	    this.config = new PropertiesConfiguration("minecontrol.properties");
-	    this.pathToShellBinary = this.config.getString("shell.bin");
 	} catch (ConfigurationException e) {
-	    // TODO log
+	    logger.error("Constructor call failed! ", e);
 	}
+	String loglevel = this.config.getString("log.level");
+	logger.setLevel(Level.toLevel(loglevel));
+	this.pathToShellBinary = this.config.getString("shell.bin");
     }
 
     /**
      * @param args
      */
     public static void main(String[] args) {
+	BasicConfigurator.configure();
 	MainController controller = new MainController();
 	// TODO
 	String screenName = args[0];
@@ -50,48 +57,56 @@ public class MainController {
 
     public void start(String screenName) {
 	if (!this.isRunning(screenName)) {
-	    System.out.println("Starting server...");
+	    // System.out.println("Starting server...");
+	    logger.info("Starting server" + screenName + "...");
 
 	    this.config.setProperty("screen.name", screenName);
 	    String startCommand = this.config.getString("command.start");
+	    logger.debug("Start command: " + startCommand);
 
 	    this.builder.command(this.pathToShellBinary, "-c", startCommand);
 	    this.builder.redirectErrorStream(true);
 
 	    try {
 		Process p = builder.start();
-		System.out.println("Server startup successful!");
+		// System.out.println("Server startup successful!");
+		logger.info("Server " + screenName + " started successfully!");
 	    } catch (IOException e) {
-		// TODO
-		System.out.println("Server startup failed!");
+		// System.out.println("Server startup failed!");
+		logger.error("Server " + screenName + " startup failed: "
+			+ e.getMessage());
 	    }
 	} else {
-	    // TODO
-	    System.out.println("server already running");
+	    // System.out.println("Server already running");
+	    logger.warn("Server " + screenName + " is already running!");
 	}
     }
 
     public void stop(String screenName) {
 	if (this.isRunning(screenName)) {
-	    System.out.println("stop");
+	    // System.out.println("stop");
+	    logger.info("Stopping server " + screenName + "...");
 	    this.sendServerCommand(screenName, "stop");
 	} else {
-	    // TODO
-	    System.out.println("no server running");
+	    // System.out.println("no server running");
+	    logger.warn("Server " + screenName + "isn't running!");
 	}
     }
 
     public void restart(String screenName) {
-	System.out.println("restart");
+	// System.out.println("restart");
+	logger.info("Restarting Server " + screenName);
 	this.stop(screenName);
 	this.start(screenName);
     }
 
     public boolean isRunning(String screenName) {
-	System.out.println("status");
+	// System.out.println("status");
 	if (this.getPid(screenName) != 0) {
+	    logger.info("Server " + screenName + "is online!");
 	    return true;
 	} else {
+	    logger.info("Server " + screenName + "is offline!");
 	    return false;
 	}
     }
@@ -99,7 +114,9 @@ public class MainController {
     protected int getPid(String screenName) {
 	int pid = 0;
 	this.config.setProperty("screen.name", screenName);
+	logger.debug("Set property 'screen.name' to " + screenName);
 	String pidCommand = this.config.getString("command.pid");
+	logger.debug("Pid command: " + pidCommand);
 	this.builder.command(this.pathToShellBinary, "-c", pidCommand);
 
 	try {
@@ -111,28 +128,31 @@ public class MainController {
 		pid = Integer.parseInt(line);
 		line = "";
 	    }
-
-	    System.out.println(pid);
-
+	    // System.out.println(pid);
+	    logger.info("Server " + screenName + "is running under pid " + pid);
 	} catch (Exception e) {
-	    // TODO
-	    System.out.println("Pid lookup failed: " + e.getMessage());
+	    // System.out.println("Pid lookup failed: " + e.getMessage());
+	    logger.error("Pid lookup failed: " + e.getMessage());
 	}
 	return pid;
     }
 
     protected void sendServerCommand(String screenName, String serverCommand) {
 	this.config.setProperty("screen.name", screenName);
+	logger.debug("Set property 'screen.name' to " + screenName);
 	this.config.setProperty("transmitter.argument", serverCommand);
+	logger.debug("Set property 'transmitter.argument' to " + serverCommand);
 
 	String transmitterCommand = this.config
 		.getString("command.transmitter");
+	logger.debug("Command to pass through: " + transmitterCommand);
 	this.builder.command(this.pathToShellBinary, "-c", transmitterCommand);
 
 	try {
 	    Process p = builder.start();
-	} catch (Exception e) {
-	    System.out.println(e.getMessage());
+	} catch (IOException e) {
+	    // System.out.println(e.getMessage());
+	    logger.error("Command transmition failed: " + e.getMessage());
 	}
     }
 }
