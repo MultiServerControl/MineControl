@@ -28,6 +28,7 @@ public class MainController {
      */
     public static void main(String[] args) {
 	MainController controller = new MainController();
+	// TODO
 	String screenName = args[0];
 	String command = args[1];
 	String serverCommand = args[2];
@@ -35,9 +36,9 @@ public class MainController {
 	if (command.equals("start")) {
 	    controller.start(screenName);
 	} else if (command.equals("stop")) {
-	    controller.stop();
+	    controller.stop(screenName);
 	} else if (command.equals("restart")) {
-	    controller.restart();
+	    controller.restart(screenName);
 	} else if (command.equals("status")) {
 	    controller.isRunning(screenName);
 	} else if (command.equals("pid")) {
@@ -48,37 +49,51 @@ public class MainController {
     }
 
     public void start(String screenName) {
-	System.out.println("Starting server...");
+	if (!this.isRunning(screenName)) {
+	    System.out.println("Starting server...");
 
-	this.config.setProperty("screen.name", screenName);
-	String startCommand = this.config.getString("command.start");
+	    this.config.setProperty("screen.name", screenName);
+	    String startCommand = this.config.getString("command.start");
 
-	this.builder.command(this.pathToShellBinary, "-c", startCommand);
-	this.builder.redirectErrorStream(true);
+	    this.builder.command(this.pathToShellBinary, "-c", startCommand);
+	    this.builder.redirectErrorStream(true);
 
-	try {
-	    Process p = builder.start();
-	    System.out.println("Server startup successful!");
-	} catch (IOException e) {
+	    try {
+		Process p = builder.start();
+		System.out.println("Server startup successful!");
+	    } catch (IOException e) {
+		// TODO
+		System.out.println("Server startup failed!");
+	    }
+	} else {
 	    // TODO
-	    System.out.println("Server startup failed!");
+	    System.out.println("server already running");
 	}
     }
 
-    public void stop() {
-	System.out.println("stop");
+    public void stop(String screenName) {
+	if (this.isRunning(screenName)) {
+	    System.out.println("stop");
+	    this.sendServerCommand(screenName, "stop");
+	} else {
+	    // TODO
+	    System.out.println("no server running");
+	}
     }
 
-    public void restart() {
+    public void restart(String screenName) {
 	System.out.println("restart");
+	this.stop(screenName);
+	this.start(screenName);
     }
 
-    public void isRunning(String screenName) {
+    public boolean isRunning(String screenName) {
 	System.out.println("status");
 	if (this.getPid(screenName) != 0) {
-	    System.out.println("running");
-	} else
-	    System.out.println("stopped");
+	    return true;
+	} else {
+	    return false;
+	}
     }
 
     protected int getPid(String screenName) {
