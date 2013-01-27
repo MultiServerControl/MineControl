@@ -103,10 +103,10 @@ public class MainController {
     public boolean isRunning(String screenName) {
 	// System.out.println("status");
 	if (this.getPid(screenName) != 0) {
-	    logger.info("Server " + screenName + "is online!");
+	    logger.info("Server " + screenName + " is online!");
 	    return true;
 	} else {
-	    logger.info("Server " + screenName + "is offline!");
+	    logger.info("Server " + screenName + " is offline!");
 	    return false;
 	}
     }
@@ -114,7 +114,7 @@ public class MainController {
     protected int getPid(String screenName) {
 	int pid = 0;
 	this.config.setProperty("screen.name", screenName);
-	logger.debug("Set property 'screen.name' to " + screenName);
+	logger.debug("getPid(): Set property 'screen.name' to " + screenName);
 	String pidCommand = this.config.getString("command.pid");
 	logger.debug("Pid command: " + pidCommand);
 	this.builder.command(this.pathToShellBinary, "-c", pidCommand);
@@ -129,7 +129,7 @@ public class MainController {
 		line = "";
 	    }
 	    // System.out.println(pid);
-	    logger.info("Server " + screenName + "is running under pid " + pid);
+	    logger.info("Server " + screenName + " is running under pid " + pid);
 	} catch (Exception e) {
 	    // System.out.println("Pid lookup failed: " + e.getMessage());
 	    logger.error("Pid lookup failed: " + e.getMessage());
@@ -139,9 +139,11 @@ public class MainController {
 
     protected void sendServerCommand(String screenName, String serverCommand) {
 	this.config.setProperty("screen.name", screenName);
-	logger.debug("Set property 'screen.name' to " + screenName);
+	logger.debug("sendServerCommand(): Set property 'screen.name' to "
+		+ screenName);
 	this.config.setProperty("transmitter.argument", serverCommand);
-	logger.debug("Set property 'transmitter.argument' to " + serverCommand);
+	logger.debug("sendServerCommand(): Set property 'transmitter.argument' to "
+		+ serverCommand);
 
 	String transmitterCommand = this.config
 		.getString("command.transmitter");
