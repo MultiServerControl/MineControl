@@ -47,9 +47,9 @@ public class ServerController {
 	this.processBuilder.command(this.pathToShellBinary, "-c", pidCommand);
 
 	try {
-	    Process p = processBuilder.start();
+	    Process pidProcess = processBuilder.start();
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(
-		    p.getInputStream()));
+		    pidProcess.getInputStream()));
 	    String line = "";
 	    while ((line = reader.readLine()) != null) {
 		pid = Integer.parseInt(line);
@@ -91,7 +91,7 @@ public class ServerController {
 	    this.processBuilder.redirectErrorStream(true);
 
 	    try {
-		Process p = processBuilder.start();
+		Process startProcess = processBuilder.start();
 		System.out.println("Server " + screenName
 			+ " started successfully!");
 		// LOGGER.info("Server " + screenName +
