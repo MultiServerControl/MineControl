@@ -24,18 +24,20 @@ public class ServerController {
     public ServerController() {
 	try {
 	    this.config = new PropertiesConfiguration(CONFIG_FILE_NAME);
-	    LOGGER.setLevel(Level.toLevel(this.config
-		    .getString(CONFIG_LOGGER_LEVEL)));
+	    String logLevel = this.config.getString(CONFIG_LOGGER_LEVEL);
+	    LOGGER.setLevel(Level.toLevel(logLevel));
+	    LOGGER.debug("Log level: " + logLevel);
 	} catch (ConfigurationException e) {
-	    // TODO log
 	    System.out
-		    .println("Class "
-			    + this.getClass().getSimpleName()
-			    + " can't be instantiated (error with PropertiesConfiguration): "
-			    + e.getMessage());
+		    .println("Fatal error: Can't run MineControl library, see log files for more information.");
+	    LOGGER.error("Class "
+		    + this.getClass().getSimpleName()
+		    + " can't be instantiated (error with PropertiesConfiguration): "
+		    + e.getMessage());
 	}
 	this.processBuilder = new ProcessBuilder("");
 	this.pathToShellBinary = this.config.getString(CONFIG_SHELL_BIN);
+	LOGGER.debug("Path to shell binary: " + pathToShellBinary);
     }
 
     protected int getPid(String screenName) {
@@ -43,7 +45,7 @@ public class ServerController {
 	this.config.setProperty("screen.name", screenName);
 	LOGGER.debug("getPid(): Set property 'screen.name' to " + screenName);
 	String pidCommand = this.config.getString("command.pid");
-	LOGGER.debug("Pid command: " + pidCommand);
+	LOGGER.debug("pid command: " + pidCommand);
 	this.processBuilder.command(this.pathToShellBinary, "-c", pidCommand);
 
 	try {
@@ -55,10 +57,8 @@ public class ServerController {
 		pid = Integer.parseInt(line);
 		line = "";
 	    }
-	    // System.out.println(pid);
 	    LOGGER.info("Server " + screenName + " is running under pid " + pid);
 	} catch (Exception e) {
-	    // System.out.println("Pid lookup failed: " + e.getMessage());
 	    LOGGER.error("Pid lookup failed: " + e.getMessage());
 	}
 	return pid;
@@ -66,13 +66,12 @@ public class ServerController {
 
     public boolean isRunning(String screenName) {
 	if (this.getPid(screenName) != 0) {
-	    System.out.println("Server " + screenName + "is running!");
-	    // TODO
-	    // LOGGER.info("Server " + screenName + " is online!");
+	    System.out.println("Server " + screenName + " is already running!");
+	    LOGGER.info("Server " + screenName + " is already running!");
 	    return true;
 	} else {
-	    System.out.println("Server " + screenName + "isn't running!");
-	    // LOGGER.info("Server " + screenName + " is offline!");
+	    System.out.println("Server " + screenName + " isn't running yet!");
+	    LOGGER.info("Server " + screenName + " isn't running yet!");
 	    return false;
 	}
     }
@@ -80,11 +79,11 @@ public class ServerController {
     public void start(String screenName) {
 	if (!this.isRunning(screenName)) {
 	    System.out.println("Starting server " + screenName + "...");
-	    // LOGGER.info("Starting server " + screenName + "...");
+	    LOGGER.info("Starting server " + screenName + "...");
 
 	    this.config.setProperty("screen.name", screenName);
 	    String startCommand = this.config.getString("command.start");
-	    // LOGGER.debug("Start command: " + startCommand);
+	    LOGGER.debug("Start command: " + startCommand);
 
 	    this.processBuilder.command(this.pathToShellBinary, "-c",
 		    startCommand);
@@ -94,17 +93,13 @@ public class ServerController {
 		Process startProcess = processBuilder.start();
 		System.out.println("Server " + screenName
 			+ " started successfully!");
-		// LOGGER.info("Server " + screenName +
-		// " started successfully!");
+		LOGGER.info("Server " + screenName + " started successfully!");
 	    } catch (IOException e) {
 		System.out.println("Server " + screenName
 			+ " startup failed! See logs for more information.");
-		// LOGGER.error("Server " + screenName + " startup failed: "
-		// + e.getMessage());
+		LOGGER.error("Server " + screenName + " startup failed: "
+			+ e.getMessage());
 	    }
-	} else {
-	    System.out.println("Server " + screenName + " is already running!");
-	    // LOGGER.warn("Server " + screenName + " is already running!");
 	}
     }
 }
