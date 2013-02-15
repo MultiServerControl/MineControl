@@ -69,12 +69,12 @@ public class ServerController {
 
     public boolean isRunning(String screenName) {
 	if (this.getPid(screenName) != 0) {
-	    System.out.println("Server " + screenName + " is already running!");
-	    LOGGER.info("Server " + screenName + " is already running!");
+	    System.out.println("Server " + screenName + " is running!");
+	    LOGGER.info("Server " + screenName + " is running!");
 	    return true;
 	} else {
-	    System.out.println("Server " + screenName + " isn't running yet!");
-	    LOGGER.info("Server " + screenName + " isn't running yet!");
+	    System.out.println("Server " + screenName + " isn't running!");
+	    LOGGER.info("Server " + screenName + " isn't running!");
 	    return false;
 	}
     }
@@ -124,8 +124,8 @@ public class ServerController {
 	    }
 	    if (!this.isRunning(screenName)) {
 		System.out.println("Server " + screenName
-			+ "stopped successfully!");
-		LOGGER.info("Server " + screenName + "stopped successfully!");
+			+ " stopped successfully!");
+		LOGGER.info("Server " + screenName + " stopped successfully!");
 	    }
 	}
     }
