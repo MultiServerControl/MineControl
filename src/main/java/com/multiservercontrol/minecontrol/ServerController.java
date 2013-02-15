@@ -16,6 +16,9 @@ public class ServerController {
     private final static String CONFIG_FILE_NAME = "minecontrol.properties";
     private final static String CONFIG_LOGGER_LEVEL = "logger.level";
     private final static String CONFIG_SHELL_BIN = "shell.bin";
+    private final static String CONFIG_STOP_DELAY = "server.stop.delay";
+    private final static String CONFIG_PID_COMMAND = "command.pid";
+    private final static String CONFIG_START_COMMAND = "command.start";
 
     private ProcessBuilder processBuilder;
     private Configuration config;
@@ -44,7 +47,7 @@ public class ServerController {
 	int pid = 0;
 	this.config.setProperty("screen.name", screenName);
 	LOGGER.debug("getPid(): Set property 'screen.name' to " + screenName);
-	String pidCommand = this.config.getString("command.pid");
+	String pidCommand = this.config.getString(CONFIG_PID_COMMAND);
 	LOGGER.debug("pid command: " + pidCommand);
 	this.processBuilder.command(this.pathToShellBinary, "-c", pidCommand);
 
@@ -82,7 +85,7 @@ public class ServerController {
 	    LOGGER.info("Starting server " + screenName + "...");
 
 	    this.config.setProperty("screen.name", screenName);
-	    String startCommand = this.config.getString("command.start");
+	    String startCommand = this.config.getString(CONFIG_START_COMMAND);
 	    LOGGER.debug("Start command: " + startCommand);
 
 	    this.processBuilder.command(this.pathToShellBinary, "-c",
@@ -102,4 +105,29 @@ public class ServerController {
 	    }
 	}
     }
+
+    public void stop(String screenName) {
+	if (this.isRunning(screenName)) {
+	    ServerMessenger messenger = new ServerMessenger();
+	    long shutdownDelay = this.config.getLong(CONFIG_STOP_DELAY);
+	    LOGGER.debug("stop(): Shutdown delay for server " + screenName
+		    + ": " + shutdownDelay);
+
+	    System.out.println("Stopping server " + screenName + "...");
+	    LOGGER.info("Stopping server " + screenName + "...");
+	    messenger.sendServerCommand(screenName, "stop");
+
+	    try {
+		Thread.sleep(shutdownDelay);
+	    } catch (InterruptedException e) {
+		LOGGER.error("Thread can't sleep!" + e.getMessage());
+	    }
+	    if (!this.isRunning(screenName)) {
+		System.out.println("Server " + screenName
+			+ "stopped successfully!");
+		LOGGER.info("Server " + screenName + "stopped successfully!");
+	    }
+	}
+    }
+
 }
