@@ -48,6 +48,8 @@ public class ServerMessenger {
 	String messengerCommand = this.config.getString("command.messenger");
 	LOGGER.debug("messenger command: " + messengerCommand);
 
+	System.out.println("Sending command " + command + "to server "
+		+ screenName);
 	this.processBuilder.command(this.pathToShellBinary, "-c",
 		messengerCommand);
 	try {
