@@ -130,4 +130,8 @@ public class ServerController {
 	}
     }
 
+    public void restart(String screenName) {
+	this.stop(screenName);
+	this.start(screenName);
+    }
 }
