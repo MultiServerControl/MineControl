@@ -14,6 +14,7 @@ public class ServerMessenger {
     private final static String CONFIG_FILE_NAME = "minecontrol.properties";
     private final static String CONFIG_LOGGER_LEVEL = "logger.level";
     private final static String CONFIG_SHELL_BIN = "shell.bin";
+    private final static String CONFIG_MESSENGER_COMMAND = "command.messenger";
 
     private ProcessBuilder processBuilder;
     private Configuration config;
@@ -45,7 +46,8 @@ public class ServerMessenger {
 	this.config.setProperty("messenger.argument", command);
 	LOGGER.debug("sendServerCommand(): Set property 'messenger.argument' to "
 		+ command);
-	String messengerCommand = this.config.getString("command.messenger");
+	String messengerCommand = this.config
+		.getString(CONFIG_MESSENGER_COMMAND);
 	LOGGER.debug("messenger command: " + messengerCommand);
 
 	System.out.println("Sending command '" + command + "' to server "
