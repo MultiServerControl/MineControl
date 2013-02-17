@@ -11,7 +11,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>com.multiservercontrol.minecontrol.MainController</mainClass>
+							<mainClass>com.multiservercontrol.minecontrol.Main</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
