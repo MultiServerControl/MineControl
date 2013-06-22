@@ -43,44 +43,6 @@ public class ServerController {
         LOGGER.debug("Path to shell binary: " + pathToShellBinary);
     }
 
-    protected int getPid(String screenName)
-    {
-        int pid = 0;
-        this.config.setProperty("screen.name", screenName);
-        LOGGER.debug("getPid(): Set property 'screen.name' to " + screenName);
-        String pidCommand = this.config.getString(CONFIG_PID_COMMAND);
-        LOGGER.debug("pid command: " + pidCommand);
-        this.processBuilder.command(this.pathToShellBinary, "-c", pidCommand);
-
-        try {
-            Process pidProcess = processBuilder.start();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    pidProcess.getInputStream()));
-            String line = "";
-            while ((line = reader.readLine()) != null) {
-                pid = Integer.parseInt(line);
-                line = "";
-            }
-            LOGGER.info("Server " + screenName + " is running under pid " + pid);
-        } catch (Exception e) {
-            LOGGER.error("Pid lookup failed: " + e.getMessage());
-        }
-        return pid;
-    }
-
-    public boolean isRunning(String screenName)
-    {
-        if (this.getPid(screenName) != 0) {
-            System.out.println("Server " + screenName + " is running!");
-            LOGGER.info("Server " + screenName + " is running!");
-            return true;
-        } else {
-            System.out.println("Server " + screenName + " isn't running!");
-            LOGGER.info("Server " + screenName + " isn't running!");
-            return false;
-        }
-    }
-
     public void start(String screenName)
     {
         if (!this.isRunning(screenName)) {
@@ -138,5 +100,43 @@ public class ServerController {
     {
         this.stop(screenName);
         this.start(screenName);
+    }
+
+    public boolean isRunning(String screenName)
+    {
+        if (this.getPid(screenName) != 0) {
+            System.out.println("Server " + screenName + " is running!");
+            LOGGER.info("Server " + screenName + " is running!");
+            return true;
+        } else {
+            System.out.println("Server " + screenName + " isn't running!");
+            LOGGER.info("Server " + screenName + " isn't running!");
+            return false;
+        }
+    }
+
+    protected int getPid(String screenName)
+    {
+        int pid = 0;
+        this.config.setProperty("screen.name", screenName);
+        LOGGER.debug("getPid(): Set property 'screen.name' to " + screenName);
+        String pidCommand = this.config.getString(CONFIG_PID_COMMAND);
+        LOGGER.debug("pid command: " + pidCommand);
+        this.processBuilder.command(this.pathToShellBinary, "-c", pidCommand);
+
+        try {
+            Process pidProcess = processBuilder.start();
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    pidProcess.getInputStream()));
+            String line = "";
+            while ((line = reader.readLine()) != null) {
+                pid = Integer.parseInt(line);
+                line = "";
+            }
+            LOGGER.info("Server " + screenName + " is running under pid " + pid);
+        } catch (Exception e) {
+            LOGGER.error("Pid lookup failed: " + e.getMessage());
+        }
+        return pid;
     }
 }
