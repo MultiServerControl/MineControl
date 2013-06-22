@@ -43,7 +43,8 @@ public class ServerController {
         LOGGER.debug("Path to shell binary: " + pathToShellBinary);
     }
 
-    protected int getPid(String screenName) {
+    protected int getPid(String screenName)
+    {
         int pid = 0;
         this.config.setProperty("screen.name", screenName);
         LOGGER.debug("getPid(): Set property 'screen.name' to " + screenName);
@@ -67,7 +68,8 @@ public class ServerController {
         return pid;
     }
 
-    public boolean isRunning(String screenName) {
+    public boolean isRunning(String screenName)
+    {
         if (this.getPid(screenName) != 0) {
             System.out.println("Server " + screenName + " is running!");
             LOGGER.info("Server " + screenName + " is running!");
@@ -79,7 +81,8 @@ public class ServerController {
         }
     }
 
-    public void start(String screenName) {
+    public void start(String screenName)
+    {
         if (!this.isRunning(screenName)) {
             System.out.println("Starting server " + screenName + "...");
             LOGGER.info("Starting server " + screenName + "...");
@@ -106,7 +109,8 @@ public class ServerController {
         }
     }
 
-    public void stop(String screenName) {
+    public void stop(String screenName)
+    {
         if (this.isRunning(screenName)) {
             ServerMessenger messenger = new ServerMessenger();
             long shutdownDelay = this.config.getLong(CONFIG_STOP_DELAY);
@@ -130,7 +134,8 @@ public class ServerController {
         }
     }
 
-    public void restart(String screenName) {
+    public void restart(String screenName)
+    {
         this.stop(screenName);
         this.start(screenName);
     }

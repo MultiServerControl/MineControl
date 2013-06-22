@@ -5,7 +5,8 @@ public class Main {
     /**
      * @param args
      */
-    public static void main(String[] args) {
+    public static void main(String[] args)
+    {
         ServerController controller = new ServerController();
         ServerMessenger messenger = new ServerMessenger();
 

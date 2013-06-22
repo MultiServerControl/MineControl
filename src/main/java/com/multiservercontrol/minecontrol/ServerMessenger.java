@@ -1,12 +1,12 @@
 package com.multiservercontrol.minecontrol;
 
-import java.io.IOException;
-
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+
+import java.io.IOException;
 
 public class ServerMessenger {
 
@@ -20,7 +20,8 @@ public class ServerMessenger {
     private Configuration config;
     private String pathToShellBinary;
 
-    public ServerMessenger() {
+    public ServerMessenger()
+    {
         try {
             this.config = new PropertiesConfiguration(CONFIG_FILE_NAME);
             String logLevel = this.config.getString(CONFIG_LOGGER_LEVEL);
@@ -39,7 +40,8 @@ public class ServerMessenger {
         LOGGER.debug("Path to shell binary: " + pathToShellBinary);
     }
 
-    public void sendServerCommand(String screenName, String command) {
+    public void sendServerCommand(String screenName, String command)
+    {
         this.config.setProperty("screen.name", screenName);
         LOGGER.debug("sendServerCommand(): Set property 'screen.name' to "
                 + screenName);
