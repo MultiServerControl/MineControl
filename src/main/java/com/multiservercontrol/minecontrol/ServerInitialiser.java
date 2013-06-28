@@ -17,7 +17,7 @@ public class ServerInitialiser {
      * @param fileName name or path of the server
      * @return true if the server exists, false if not
      */
-    public boolean serverFileExists(String fileName)
+    public boolean serverExists(String fileName)
     {
         File serverFile = new File(fileName);
 

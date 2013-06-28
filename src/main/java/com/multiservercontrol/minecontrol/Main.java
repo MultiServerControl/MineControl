@@ -35,7 +35,7 @@ public class Main {
             String serverCommand = args[2];
             messenger.sendServerCommand(screenName, serverCommand);
         } else if (command.equals("test")) {
-            initialiser.serverFileExists(screenName);
+            initialiser.serverExists(screenName);
         }
     }
 }
