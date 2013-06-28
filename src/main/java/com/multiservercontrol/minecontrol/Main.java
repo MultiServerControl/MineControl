@@ -7,6 +7,7 @@ public class Main {
      */
     public static void main(String[] args)
     {
+        ServerInitialiser initialiser = new ServerInitialiser();
         ServerController controller = new ServerController();
         ServerMessenger messenger = new ServerMessenger();
 
@@ -28,6 +29,8 @@ public class Main {
             // TODO dev
             String serverCommand = args[2];
             messenger.sendServerCommand(screenName, serverCommand);
+        } else if (command.equals("test")) {
+            initialiser.serverFileExists(screenName);
         }
     }
 }
