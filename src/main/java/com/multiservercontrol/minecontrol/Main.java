@@ -1,9 +1,14 @@
 package com.multiservercontrol.minecontrol;
 
+/**
+ * This is the entry point of the MineControl library. It receives user commands and handle them.
+ */
 public class Main {
 
     /**
-     * @param args
+     * Main method will be called on every library call.
+     *
+     * @param args arguments that are passed through with the library call like 'serverName', 'command', ('serverCommand')
      */
     public static void main(String[] args)
     {

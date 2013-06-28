@@ -8,6 +8,9 @@ import org.apache.log4j.Logger;
 
 import java.io.IOException;
 
+/**
+ * This class is used for all art of communication with the server, like chat or command tunneling.
+ */
 public class ServerMessenger {
 
     private static Logger LOGGER = Logger.getLogger(ServerMessenger.class);
@@ -40,6 +43,12 @@ public class ServerMessenger {
         LOGGER.debug("Path to shell binary: " + pathToShellBinary);
     }
 
+    /**
+     * Passes a server command through the minecraft server.
+     *
+     * @param screenName name of the minecraft server
+     * @param command command that should be passed through the server
+     */
     public void sendServerCommand(String screenName, String command)
     {
         this.config.setProperty("screen.name", screenName);

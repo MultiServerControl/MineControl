@@ -10,6 +10,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
+/**
+ * This class is the controller of the minecraft servers. With it you can start|stop|restart the server.
+ */
 public class ServerController {
 
     private static Logger LOGGER = Logger.getLogger(ServerController.class);
@@ -44,6 +47,11 @@ public class ServerController {
         LOGGER.debug("Path to shell binary: " + pathToShellBinary);
     }
 
+    /**
+     * Starts the minecraft server with the given server name.
+     *
+     * @param screenName name of the minecraft server
+     */
     public void start(String screenName)
     {
         if (!this.isRunning(screenName)) {
@@ -72,6 +80,11 @@ public class ServerController {
         }
     }
 
+    /**
+     * Stops the minecraft server with the given server name.
+     *
+     * @param screenName name of the minecraft server
+     */
     public void stop(String screenName)
     {
         if (this.isRunning(screenName)) {
@@ -97,12 +110,23 @@ public class ServerController {
         }
     }
 
+    /**
+     * Restarts the minecraft server with the given server name.
+     *
+     * @param screenName name of the minecraft server
+     */
     public void restart(String screenName)
     {
         this.stop(screenName);
         this.start(screenName);
     }
 
+    /**
+     * Checks if the minecraft server with the given server name is running.
+     *
+     * @param screenName name of the minecraft server
+     * @return true if the server is running, false if not
+     */
     public boolean isRunning(String screenName)
     {
         if (this.getPid(screenName) != 0) {
@@ -116,6 +140,12 @@ public class ServerController {
         }
     }
 
+    /**
+     * Retrieves the process number (pid) of the running server with the given server name.
+     *
+     * @param screenName name of the minecraft server
+     * @return pid - the process number of the minecraft server
+     */
     protected int getPid(String screenName)
     {
         int pid = 0;
