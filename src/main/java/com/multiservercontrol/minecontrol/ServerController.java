@@ -24,7 +24,8 @@ public class ServerController {
     private Configuration config;
     private String pathToShellBinary;
 
-    public ServerController() {
+    public ServerController()
+    {
         try {
             this.config = new PropertiesConfiguration(CONFIG_FILE_NAME);
             String logLevel = this.config.getString(CONFIG_LOGGER_LEVEL);
