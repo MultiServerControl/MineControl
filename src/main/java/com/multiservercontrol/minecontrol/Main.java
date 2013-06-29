@@ -20,7 +20,9 @@ public class Main {
         String command = args[1];
 
         if (command.equals("start")) {
-            controller.start(screenName);
+            if (initialiser.serverExists(screenName)) {
+                controller.start(screenName);
+            }
         } else if (command.equals("stop")) {
             // TODO pass messenger to work with
             controller.stop(screenName);

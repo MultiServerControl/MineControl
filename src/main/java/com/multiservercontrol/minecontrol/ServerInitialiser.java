@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Scanner;
 
 public class ServerInitialiser {
 
@@ -20,11 +21,13 @@ public class ServerInitialiser {
     private final static String CONFIG_SERVER_JAR = "server.jar";
 
     private Configuration config;
+    private Scanner input;
 
     public ServerInitialiser()
     {
         try {
             this.config = new PropertiesConfiguration(CONFIG_FILE_NAME);
+            this.input = new Scanner(System.in);
             String logLevel = this.config.getString(CONFIG_LOGGER_LEVEL);
             LOGGER.setLevel(Level.toLevel(logLevel));
             LOGGER.debug("Log level: " + logLevel);
@@ -51,7 +54,16 @@ public class ServerInitialiser {
         if (serverFile.exists()) {
             return true;
         }
-        System.out.println("Der Server existiert nicht!");
+        System.out.println("Can't find the server file!");
+        System.out.println("Should MineControl download it for you? (type yes or no)");
+
+        if (this.input.next().equals("yes")) {
+            this.getServerFile(fileName);
+            System.out.println("Server file download completed!");
+        } else {
+            System.out.println("Without the server file you can't start your server!");
+        }
+
         return false;
     }
 
