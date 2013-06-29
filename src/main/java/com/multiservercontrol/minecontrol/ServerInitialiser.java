@@ -67,6 +67,12 @@ public class ServerInitialiser {
         return false;
     }
 
+    /**
+     * Downloads the server file from the given URL and saves it under the given path
+     * e.g. serverName/minecraft_server.jar
+     *
+     * @param serverName name of the server (is used as directory name)
+     */
     public void getServerFile(String serverName)
     {
         try {
