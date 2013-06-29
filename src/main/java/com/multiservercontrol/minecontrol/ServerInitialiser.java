@@ -57,7 +57,7 @@ public class ServerInitialiser {
         System.out.println("Can't find the server file!");
         System.out.println("Should MineControl download it for you? (type yes or no)");
 
-        if (this.input.next().equals("yes")) {
+        if (this.input.next().toLowerCase().equals("yes")) {
             this.getServerFile(fileName);
             System.out.println("Server file download completed!");
         } else {
