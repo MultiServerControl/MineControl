@@ -36,6 +36,7 @@ public class Main {
             messenger.sendServerCommand(screenName, serverCommand);
         } else if (command.equals("test")) {
             initialiser.serverExists(screenName);
+            initialiser.getServerFile(screenName);
         }
     }
 }
