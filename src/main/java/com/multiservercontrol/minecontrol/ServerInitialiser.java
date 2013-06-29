@@ -17,6 +17,7 @@ public class ServerInitialiser {
     private static Logger LOGGER = Logger.getLogger(ServerController.class);
     private final static String CONFIG_FILE_NAME = "minecontrol.properties";
     private final static String CONFIG_LOGGER_LEVEL = "logger.level";
+    private final static String CONFIG_SERVER_MODS = "server.mods";
     private final static String CONFIG_SERVER_URL = "server.url";
     private final static String CONFIG_SERVER_JAR = "server.jar";
 
@@ -59,7 +60,6 @@ public class ServerInitialiser {
 
         if (this.input.next().toLowerCase().equals("yes")) {
             this.getServerFile(fileName);
-            System.out.println("Server file download completed!");
         } else {
             System.out.println("Without the server file you can't start your server!");
         }
@@ -75,12 +75,34 @@ public class ServerInitialiser {
      */
     public void getServerFile(String serverName)
     {
+        String[] serverMods = this.config.getStringArray(CONFIG_SERVER_MODS);
+        String inputServerMod = null;
+        String modUrl = null;
+        String modJar = null;
+        System.out.println("Following server mods are available:");
+
+        for (String mod : serverMods) {
+            System.out.println(mod);
+        }
+
+        System.out.println("Which one do you want to use?");
+        inputServerMod = this.input.next();
+
+        for (int i = 0; i < serverMods.length; i++) {
+            String acutalMod = serverMods[i];
+            if (inputServerMod.toLowerCase().equals(acutalMod)) {
+                modUrl = this.config.getString(CONFIG_SERVER_URL + "." + acutalMod);
+                modJar = this.config.getString(CONFIG_SERVER_JAR + "." + acutalMod);
+            }
+        }
+
         try {
-            URL urlToServerFile = new URL(this.config.getString(CONFIG_SERVER_URL));
-            File destination = new File(serverName + "/" + this.config.getString(CONFIG_SERVER_JAR));
+            URL urlToServerFile = new URL(modUrl);
+            File destination = new File(serverName + "/" + modJar);
 
             System.out.println("Server file will be downloaded now...");
             FileUtils.copyURLToFile(urlToServerFile, destination);
+            System.out.println("Server file download completed!");
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
