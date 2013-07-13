@@ -12,33 +12,32 @@ public class Main {
      */
     public static void main(String[] args)
     {
-        ServerInitialiser initialiser = new ServerInitialiser();
-        ServerController controller = new ServerController();
-        ServerMessenger messenger = new ServerMessenger();
-
         String serverName = args[0];
         String command = args[1];
 
+        ServerInitialiser initialiser = new ServerInitialiser();
+        ServerController controller = new ServerController(serverName);
+        ServerMessenger messenger = new ServerMessenger();
+
         if (command.equals("start")) {
             if (initialiser.serverExists(serverName)) {
-                controller.start(serverName);
+                controller.start();
             }
         } else if (command.equals("stop")) {
             // TODO pass messenger to work with
-            controller.stop(serverName);
+            controller.stop();
         } else if (command.equals("restart")) {
-            controller.restart(serverName);
+            controller.restart();
         } else if (command.equals("status")) {
-            controller.isRunning(serverName);
+            controller.isRunning();
         } else if (command.equals("pid")) {
-            controller.getPid(serverName);
+            controller.getPid();
         } else if (command.equals("command")) {
             // TODO dev
             String serverCommand = args[2];
             messenger.sendServerCommand(serverName, serverCommand);
-        } else if (command.equals("test")) {
-            initialiser.serverExists(serverName);
-            //initialiser.getServerFile(serverName);
+        } else if (command.equals("create")) {
+            initialiser.createServer(serverName);
         }
     }
 }
