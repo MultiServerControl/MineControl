@@ -20,6 +20,7 @@ public class ServerInitialiser {
     private final static String CONFIG_SERVER_MODS = "server.mods";
     private final static String CONFIG_SERVER_URL = "server.url";
     private final static String CONFIG_SERVER_JAR = "server.jar";
+    private final static String CONFIG_SERVER_PREFIX = "server";
 
     private Configuration config;
     private Scanner input;
@@ -45,25 +46,24 @@ public class ServerInitialiser {
     /**
      * Checks if the server (file/folder) exists.
      *
-     * @param fileName name or path of the server
+     * @param serverName name or path of the server
      * @return true if the server exists, false if not
      */
-    public boolean serverExists(String fileName)
+    protected boolean serverExists(String serverName)
     {
-        File serverFile = new File(fileName);
+        File serverFile = new File(serverName);
 
         if (serverFile.exists()) {
             return true;
         }
-        System.out.println("Can't find the server file!");
-        System.out.println("Should MineControl download it for you? (type yes or no)");
+        System.out.println("The given server doesn't exist!");
+        System.out.println("Should MineControl create it for you? (type yes or no)");
 
         if (this.input.next().toLowerCase().equals("yes")) {
-            this.getServerFile(fileName);
+            this.createServer(serverName);
         } else {
-            System.out.println("Without the server file you can't start your server!");
+            System.out.println("Sorry, but without that existing server you can't play!");
         }
-
         return false;
     }
 
@@ -73,12 +73,32 @@ public class ServerInitialiser {
      *
      * @param serverName name of the server (is used as directory name)
      */
-    public void getServerFile(String serverName)
+    protected void getServerFile(String serverName, String urlToServerMod, String nameOfServerFile)
     {
+        try {
+            URL urlToServerFile = new URL(urlToServerMod);
+            File destination = new File(serverName + "/" + nameOfServerFile);
+
+            System.out.println("Server file will be downloaded now...");
+            FileUtils.copyURLToFile(urlToServerFile, destination);
+            System.out.println("Server file download completed!");
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
+    }
+
+    public void createServer(String serverName)
+    {
+        if (this.serverExists(serverName)) {
+            System.out.println("Server " + serverName + "already exists!");
+            return;
+        }
+
         String[] serverMods = this.config.getStringArray(CONFIG_SERVER_MODS);
         String inputServerMod = null;
         String modUrl = null;
         String modJar = null;
+
         System.out.println("Following server mods are available:");
 
         for (String mod : serverMods) {
@@ -91,20 +111,11 @@ public class ServerInitialiser {
         for (int i = 0; i < serverMods.length; i++) {
             String acutalMod = serverMods[i];
             if (inputServerMod.toLowerCase().equals(acutalMod)) {
+                this.config.setProperty(CONFIG_SERVER_PREFIX + "." + serverName, acutalMod);
                 modUrl = this.config.getString(CONFIG_SERVER_URL + "." + acutalMod);
                 modJar = this.config.getString(CONFIG_SERVER_JAR + "." + acutalMod);
             }
         }
-
-        try {
-            URL urlToServerFile = new URL(modUrl);
-            File destination = new File(serverName + "/" + modJar);
-
-            System.out.println("Server file will be downloaded now...");
-            FileUtils.copyURLToFile(urlToServerFile, destination);
-            System.out.println("Server file download completed!");
-        } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
-        }
+        this.getServerFile(serverName, modUrl, modJar);
     }
 }
