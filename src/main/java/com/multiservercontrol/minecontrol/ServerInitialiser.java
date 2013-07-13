@@ -55,16 +55,10 @@ public class ServerInitialiser {
 
         if (serverFile.exists()) {
             return true;
-        }
-        System.out.println("The given server doesn't exist!");
-        System.out.println("Should MineControl create it for you? (type yes or no)");
-
-        if (this.input.next().toLowerCase().equals("yes")) {
-            this.createServer(serverName);
         } else {
-            System.out.println("Sorry, but without that existing server you can't play!");
+            System.out.println("The given server doesn't exist!");
+            return false;
         }
-        return false;
     }
 
     /**
