@@ -47,7 +47,8 @@ public class ServerController {
         this.processBuilder = new ProcessBuilder("");
         this.pathToShellBinary = this.config.getString(CONFIG_SHELL_BIN);
         this.config.setProperty("server.name", this.serverName);
-        this.config.setProperty("server.jar", this.config.getString("server." + serverName));
+        // TODO make variable
+        this.config.setProperty("server.jar", serverName+ "/minecraft_server.jar");
         LOGGER.debug("Path to shell binary: " + pathToShellBinary);
         LOGGER.debug("getPid(): Set property 'server.name' to " + this.serverName);
     }
