@@ -46,14 +46,14 @@ public class ServerMessenger {
     /**
      * Passes a server command through the minecraft server.
      *
-     * @param screenName name of the minecraft server
+     * @param serverName name of the minecraft server
      * @param command command that should be passed through the server
      */
-    public void sendServerCommand(String screenName, String command)
+    public void sendServerCommand(String serverName, String command)
     {
-        this.config.setProperty("screen.name", screenName);
-        LOGGER.debug("sendServerCommand(): Set property 'screen.name' to "
-                + screenName);
+        this.config.setProperty("server.name", serverName);
+        LOGGER.debug("sendServerCommand(): Set property 'server.name' to "
+                + serverName);
         this.config.setProperty("messenger.argument", command);
         LOGGER.debug("sendServerCommand(): Set property 'messenger.argument' to "
                 + command);
@@ -62,7 +62,7 @@ public class ServerMessenger {
         LOGGER.debug("messenger command: " + messengerCommand);
 
         System.out.println("Sending command '" + command + "' to server "
-                + screenName);
+                + serverName);
         this.processBuilder.command(this.pathToShellBinary, "-c",
                 messengerCommand);
         try {

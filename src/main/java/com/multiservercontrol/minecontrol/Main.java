@@ -16,29 +16,29 @@ public class Main {
         ServerController controller = new ServerController();
         ServerMessenger messenger = new ServerMessenger();
 
-        String screenName = args[0];
+        String serverName = args[0];
         String command = args[1];
 
         if (command.equals("start")) {
-            if (initialiser.serverExists(screenName)) {
-                controller.start(screenName);
+            if (initialiser.serverExists(serverName)) {
+                controller.start(serverName);
             }
         } else if (command.equals("stop")) {
             // TODO pass messenger to work with
-            controller.stop(screenName);
+            controller.stop(serverName);
         } else if (command.equals("restart")) {
-            controller.restart(screenName);
+            controller.restart(serverName);
         } else if (command.equals("status")) {
-            controller.isRunning(screenName);
+            controller.isRunning(serverName);
         } else if (command.equals("pid")) {
-            controller.getPid(screenName);
+            controller.getPid(serverName);
         } else if (command.equals("command")) {
             // TODO dev
             String serverCommand = args[2];
-            messenger.sendServerCommand(screenName, serverCommand);
+            messenger.sendServerCommand(serverName, serverCommand);
         } else if (command.equals("test")) {
-            initialiser.serverExists(screenName);
-            initialiser.getServerFile(screenName);
+            initialiser.serverExists(serverName);
+            //initialiser.getServerFile(serverName);
         }
     }
 }

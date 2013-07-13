@@ -50,15 +50,15 @@ public class ServerController {
     /**
      * Starts the minecraft server with the given server name.
      *
-     * @param screenName name of the minecraft server
+     * @param serverName name of the minecraft server
      */
-    public void start(String screenName)
+    public void start(String serverName)
     {
-        if (!this.isRunning(screenName)) {
-            System.out.println("Starting server " + screenName + "...");
-            LOGGER.info("Starting server " + screenName + "...");
+        if (!this.isRunning(serverName)) {
+            System.out.println("Starting server " + serverName + "...");
+            LOGGER.info("Starting server " + serverName + "...");
 
-            this.config.setProperty("screen.name", screenName);
+            this.config.setProperty("server.name", serverName);
             String startCommand = this.config.getString(CONFIG_START_COMMAND);
             LOGGER.debug("Start command: " + startCommand);
 
@@ -68,13 +68,13 @@ public class ServerController {
 
             try {
                 Process startProcess = processBuilder.start();
-                System.out.println("Server " + screenName
+                System.out.println("Server " + serverName
                         + " started successfully!");
-                LOGGER.info("Server " + screenName + " started successfully!");
+                LOGGER.info("Server " + serverName + " started successfully!");
             } catch (IOException e) {
-                System.out.println("Server " + screenName
+                System.out.println("Server " + serverName
                         + " startup failed! See logs for more information.");
-                LOGGER.error("Server " + screenName + " startup failed: "
+                LOGGER.error("Server " + serverName + " startup failed: "
                         + e.getMessage());
             }
         }
@@ -83,29 +83,29 @@ public class ServerController {
     /**
      * Stops the minecraft server with the given server name.
      *
-     * @param screenName name of the minecraft server
+     * @param serverName name of the minecraft server
      */
-    public void stop(String screenName)
+    public void stop(String serverName)
     {
-        if (this.isRunning(screenName)) {
+        if (this.isRunning(serverName)) {
             ServerMessenger messenger = new ServerMessenger();
             long shutdownDelay = this.config.getLong(CONFIG_STOP_DELAY);
-            LOGGER.debug("stop(): Shutdown delay for server " + screenName
+            LOGGER.debug("stop(): Shutdown delay for server " + serverName
                     + ": " + shutdownDelay);
 
-            System.out.println("Stopping server " + screenName + "...");
-            LOGGER.info("Stopping server " + screenName + "...");
-            messenger.sendServerCommand(screenName, "stop");
+            System.out.println("Stopping server " + serverName + "...");
+            LOGGER.info("Stopping server " + serverName + "...");
+            messenger.sendServerCommand(serverName, "stop");
 
             try {
                 Thread.sleep(shutdownDelay);
             } catch (InterruptedException e) {
                 LOGGER.error("Thread can't sleep!" + e.getMessage());
             }
-            if (!this.isRunning(screenName)) {
-                System.out.println("Server " + screenName
+            if (!this.isRunning(serverName)) {
+                System.out.println("Server " + serverName
                         + " stopped successfully!");
-                LOGGER.info("Server " + screenName + " stopped successfully!");
+                LOGGER.info("Server " + serverName + " stopped successfully!");
             }
         }
     }
@@ -113,29 +113,29 @@ public class ServerController {
     /**
      * Restarts the minecraft server with the given server name.
      *
-     * @param screenName name of the minecraft server
+     * @param serverName name of the minecraft server
      */
-    public void restart(String screenName)
+    public void restart(String serverName)
     {
-        this.stop(screenName);
-        this.start(screenName);
+        this.stop(serverName);
+        this.start(serverName);
     }
 
     /**
      * Checks if the minecraft server with the given server name is running.
      *
-     * @param screenName name of the minecraft server
+     * @param serverName name of the minecraft server
      * @return true if the server is running, false if not
      */
-    public boolean isRunning(String screenName)
+    public boolean isRunning(String serverName)
     {
-        if (this.getPid(screenName) != 0) {
-            System.out.println("Server " + screenName + " is running!");
-            LOGGER.info("Server " + screenName + " is running!");
+        if (this.getPid(serverName) != 0) {
+            System.out.println("Server " + serverName + " is running!");
+            LOGGER.info("Server " + serverName + " is running!");
             return true;
         } else {
-            System.out.println("Server " + screenName + " isn't running!");
-            LOGGER.info("Server " + screenName + " isn't running!");
+            System.out.println("Server " + serverName + " isn't running!");
+            LOGGER.info("Server " + serverName + " isn't running!");
             return false;
         }
     }
@@ -143,14 +143,14 @@ public class ServerController {
     /**
      * Retrieves the process number (pid) of the running server with the given server name.
      *
-     * @param screenName name of the minecraft server
+     * @param serverName name of the minecraft server
      * @return pid - the process number of the minecraft server
      */
-    protected int getPid(String screenName)
+    protected int getPid(String serverName)
     {
         int pid = 0;
-        this.config.setProperty("screen.name", screenName);
-        LOGGER.debug("getPid(): Set property 'screen.name' to " + screenName);
+        this.config.setProperty("server.name", serverName);
+        LOGGER.debug("getPid(): Set property 'server.name' to " + serverName);
         String pidCommand = this.config.getString(CONFIG_PID_COMMAND);
         LOGGER.debug("pid command: " + pidCommand);
         this.processBuilder.command(this.pathToShellBinary, "-c", pidCommand);
@@ -164,7 +164,7 @@ public class ServerController {
                 pid = Integer.parseInt(line);
                 line = "";
             }
-            LOGGER.info("Server " + screenName + " is running under pid " + pid);
+            LOGGER.info("Server " + serverName + " is running under pid " + pid);
         } catch (Exception e) {
             LOGGER.error("Pid lookup failed: " + e.getMessage());
         }
