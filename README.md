@@ -1,7 +1,7 @@
 MineControl
 ===========
 
-MineControl is a java based library for managing minecraft servers via command line (webinterface and app - in future releases).
+MineControl is a java based library for managing minecraft servers via command line (webinterface, app and bukkit plugin - in future releases).
 
 You want to work on the project with us?
 --------
